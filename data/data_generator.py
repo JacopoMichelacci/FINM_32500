@@ -69,5 +69,5 @@ if __name__ == "__main__":
         volatility=0.02,
         interval=0.0001
     )
-    print("market_data.csv generated with 500 ticks.")
+    print("market_data.csv generated with x ticks.")
 
