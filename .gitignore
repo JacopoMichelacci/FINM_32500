@@ -23,3 +23,6 @@ venv/
 .vscode/
 .idea/
 *.swp
+
+#other ignored files
+learning_oop/
