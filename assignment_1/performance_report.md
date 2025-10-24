@@ -2,10 +2,10 @@
 
 **Total Return:** -2.27%
 
-**Sharpe Ratio:** -1.16
+**Sharpe Ratio:** -1.15
 
-**Max Drawdown:** 9.93%
+**Max Drawdown:** 8.91%
 
-**number of trades:** 47
+**number of trades:** 23
 
 Generated from backtest equity curve.
