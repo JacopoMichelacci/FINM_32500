@@ -1,4 +1,9 @@
 {
-    "python.defaultInterpreterPath": "${workspaceFolder}/.venv"
-}
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv",
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": true,
+      "strings": true
+    }
+  }
   

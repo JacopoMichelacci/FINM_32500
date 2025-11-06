@@ -2,7 +2,7 @@ import random
 from models import Order, OrderError, ExecutionError, MarketDataPoint
 
 class BacktestEngine:
-    def __init__(self, strategies: list, initial_cap: float = 100000):
+    def __init__(self, strategies: list, initial_cap: float = 100_000):
         self.strategies = strategies
         self.initial_cap = initial_cap
         self.open_positions = {}        #list of current open positions
@@ -29,7 +29,6 @@ class BacktestEngine:
             return None
         
         qty = strat.quantity * signal
-        order = Order(tick.symbol, qty, tick.price)
 
         #simulate execution-error
         if (random.random() < 0.05):
@@ -39,7 +38,6 @@ class BacktestEngine:
         pos = self.open_positions.get(tick.symbol, {"quantity" : 0, "avg_price" : 0.0})
 
         #open quantity
-        new_qty = qty
         if pos["quantity"] > 0 and signal == -1:         #long-flip --> short
             pos["quantity"] = qty
         elif pos["quantity"] > 0 and signal == 1:        #stacking long

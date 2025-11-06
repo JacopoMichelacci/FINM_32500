@@ -12,8 +12,8 @@ def main():
 
     #define strategies
     strategies = [ 
-        MA_Crossover(active=True, symbol="AAPL", quantity=10, fast_len=2, slow_len=5), 
-        MeanReverting(active=False, symbol="AAPL", quantity=10, mean_len=50, pct_tresh=0.1)
+        MA_Crossover(active=True, symbol="AAPL", quantity=10, fast_len=40, slow_len=80), 
+        MeanReverting(active=True, symbol="AAPL", quantity=10, mean_len=50, pct_tresh=0.00001)
         ]
     
     #run backtest

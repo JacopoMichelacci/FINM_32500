@@ -1,5 +1,6 @@
 import math
 import statistics
+import pandas as pd
 
 class PerformanceReport:
     def __init__(self, equity_curve: list[tuple], trade_log, initial_cap: float):
@@ -29,18 +30,12 @@ class PerformanceReport:
         
         return cumulative - 1
     
-    def sharpe_ratio(self, returns: list[float], rf_rate: float = 0.02) -> float:
-        if len(returns) < 2:
-            return 0.0
-        
-        exc_r = [r - rf_rate for r in returns]
-        mean_r = statistics.mean(exc_r)
-        std_r = statistics.stdev(exc_r)
+    def sharpe_ratio(self, returns: list[float], rf_rate: float= 0.02):
+        returns = pd.Series(returns)
+        mean_r = returns.mean() * 252
+        std_r = returns.std() * (252 ** 0.5)
 
-        if std_r == 0:
-            return 0.0
-
-        return (mean_r / std_r)
+        return (mean_r - rf_rate) / std_r
 
     def max_drawdown(self, returns: list[float]) -> float: 
         equity = [1.0]

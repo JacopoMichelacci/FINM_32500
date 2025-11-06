@@ -13,7 +13,7 @@ class MA_Crossover(Strategy):
     def __init__(self, symbol: str, quantity: int = 1, active: bool = True,
                  fast_len: int = 10, 
                  slow_len: int = 50
-    ):
+        ):
         self.symbol = symbol
         self.quantity = quantity
         self.active = active
@@ -66,7 +66,7 @@ class MeanReverting(Strategy):
     def __init__(self, symbol: str, quantity: int = 1, active: bool = True,
                  mean_len: int = 50,
                  pct_tresh: float = 3.0
-    ):
+        ):
         self.symbol = symbol
         self.quantity = quantity
         self.active = active
