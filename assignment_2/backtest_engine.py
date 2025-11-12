@@ -13,7 +13,7 @@ class BacktestEngine:
 
     def run(self, market_data: pd.DataFrame):
         start = time.time()
-        print("Running Backtest...")
+        print("\nRunning Backtest...")
 
         market_data = market_data.ffill().bfill()
 
@@ -33,6 +33,10 @@ class BacktestEngine:
 
             for date, price in market_data.iterrows():
                 for symbol in market_data.columns:
+                    #check for nan value
+                    if pd.isna(price[symbol]):
+                        continue    #skip ticker for this date only
+
                     sig = 0
 
                     if symbol in signals:
@@ -87,7 +91,12 @@ class BacktestEngine:
                                 holdings[symbol] -= res_qty
                                 strat_trades.append((date, "SHORT", strat_name, symbol, int(res_qty), float(price[symbol])))
 
-                total_value = cash + sum(holdings[sym] * price[sym] for sym in market_data.columns)
+                # only include tickers that have valid prices AND valid holdings
+                valid_symbols = [sym for sym in market_data.columns if not pd.isna(price[sym])]
+                total_value = cash + sum(holdings[sym] * price[sym] for sym in valid_symbols if not np.isnan(price[sym]))
+                
+                if np.isnan(total_value):
+                    total_value = cash  # fallback safety: never append NaN
                 portfolio_value.append(total_value)
 
             self.equity_curve[strat_name] = (pd.Series(portfolio_value, index=market_data.index).reindex(market_data.index).ffill().bfill())

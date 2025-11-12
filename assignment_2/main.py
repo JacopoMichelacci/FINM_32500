@@ -17,7 +17,7 @@ def main():
     #load market data
     market_data = pd.read_csv("/Users/jacopomichelacci/FINM_32500/data/SP500_all.csv", index_col="Date")
     df = pd.read_csv("/Users/jacopomichelacci/FINM_32500/data/SP500_all.csv", index_col="Date")
-    df = df[["AAPL", "TSLA"]]
+    #df = df[["AAPL", "TSLA", "MSFT", 'ABT', 'ABBV', 'ACN', 'WTW', 'WDAY', 'WYNN', 'XEL', 'XYL', 'YUM', 'ZBRA', 'ZBH']]
 
     strategies = [
         BenchmarkStrat(quantity=1, active=True),
@@ -37,15 +37,18 @@ def main():
                            std_len=20)
     ]
 
+
     #run backtest
     engine = BacktestEngine(strategies_list=strategies, initial_capital=initial_capital)
-    equity_curve, trade_log = engine.run(market_data=market_data)
+    equity_curve, trade_log = engine.run(market_data=df)
 
     #performance report
     report = PerformanceReport(equity_curve=equity_curve, trade_log=trade_log, initial_cap=initial_capital)
-    report.generate_markdown(strategies_list= strategies,save_path="/Users/jacopomichelacci/FINM_32500/assignment_2/performance_report.md", plot_path="/Users/jacopomichelacci/FINM_32500/assignment_2/report/equity_curve.png")
+    report.generate_markdown(strategies_list= strategies,
+                             save_path="/Users/jacopomichelacci/FINM_32500/assignment_2/report/markdown_report.md", 
+                             plot_path="/Users/jacopomichelacci/FINM_32500/assignment_2/report/equity.png")
 
-    
+
 
 if __name__ == "__main__":
     main()

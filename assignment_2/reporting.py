@@ -80,31 +80,44 @@ class PerformanceReport:
         # ✅ otherwise, compute for all
         counts = {s: _count_for_strategy(s) for s in set(t[2] for t in self.trade_log)}
         return pd.DataFrame([counts])
-    
-    def plot_equity(self, save_path: str= None):
-        plt.figure(figsize=(12,6))
-        plt.xlabel("time")
-        plt.ylabel("returns")
-
-        for strat in self.equity_curve.columns:
-            plt.plot(self.equity_curve.index, self.equity_curve[strat], label=strat)
         
-        plt.legend()
+    def plot_equity(self, save_path: str = None):
+        import matplotlib.pyplot as plt
+        plt.figure(figsize=(12, 6))
+        plt.title("Equity Curve", fontsize=14, weight="bold")
+        plt.xlabel("Date")
+        plt.ylabel("Portfolio Value")
+
+        # plot each strategy
+        for strat in self.equity_curve.columns:
+            if self.equity_curve[strat].notna().any():
+                self.equity_curve.index = pd.to_datetime(self.equity_curve.index)
+                plt.plot(self.equity_curve.index, self.equity_curve[strat], label=strat)
+        
+        plt.legend(loc="upper left", fontsize=9)
         plt.grid(alpha=0.4)
+        plt.tight_layout()
+
+        # draw the canvas before saving (prevents empty file)
+        plt.gcf().canvas.draw()
 
         if save_path:
-            plt.savefig(save_path, dpi=300)
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+            # Always overwrite any existing image
+            if os.path.exists(save_path):
+                os.remove(save_path)
+
+            plt.savefig(save_path, dpi=300, bbox_inches="tight")
+            plt.close()
             print(f"✅ Equity curve plot saved to: {save_path}")
         else:
             plt.show()
-    
+
+
     
     def generate_markdown(self, strategies_list, save_path: str, plot_path: str):
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        save_path = os.path.join(script_dir, "report", "performance_report.md")
-        plot_path = os.path.join(script_dir, "report", "equity_curve.png")
-
-        
+        image_name = os.path.basename(plot_path)
+    
         #compute all metrics
         returns = self.compute_returns()
         report_lines = ["#Strategy Performance Report", ""]
@@ -127,25 +140,28 @@ class PerformanceReport:
             mdd = self.max_drawdown(r)
             trades = self.count_trades(strat_name=strat_name)
 
-            summary_table.append(f"| {strat_name:<25} | {total_ret:>10.5%} | {sharpe:>8.2f} | {-mdd:>10.5%} | {str(trades):>7} |")
+            summary_table.append(f"| {strat_name:<25} | {total_ret:>10.2%} | {sharpe:>8.2f} | {-mdd:>10.2%} | {str(trades):>7} |")
 
 
         report_lines += summary_table
         report_lines.append("\n")
-
-        #embed plot image (if it exists)
-        if os.path.exists(plot_path):
-            report_lines.append(f"![Equity Curve]({plot_path})\n")
-
-        report_lines.append("*Generated automatically by BacktestEngine*")
         markdown_text = "\n".join(report_lines)
         
         #save markdown
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
 
+        #Ensure directory exists and remove any old file
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        if os.path.exists(save_path):
+            os.remove(save_path)
+
         with open(save_path, "w") as f:
             f.write(markdown_text)
 
-        print(f"✅ Markdown report saved to: {os.path.abspath(save_path)}")
+        print(f"\n✅ Markdown report saved to: {os.path.abspath(save_path)}")
+        
+        print("\Generating Equity Plot...")
+        self.plot_equity(plot_path)
+
         return markdown_text
         
