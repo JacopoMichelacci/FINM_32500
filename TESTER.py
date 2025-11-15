@@ -1,6 +1,15 @@
+import sys, os
 import pandas as pd
 import numpy as np
 
-x = 0.02
+print("\n")
 
-print(f"{x:.2%}")
+x = np.ones((4,3))
+
+np.arange(10)
+
+arr = np.linspace(0,15,5)
+
+print(arr)
+print(x)
+

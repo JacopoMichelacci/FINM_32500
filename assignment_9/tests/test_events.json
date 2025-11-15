@@ -1,0 +1,9 @@
+[
+    {
+        "time": "2025-11-13 14:42:11",
+        "event_type": "TestEvent",
+        "data": {
+            "key": "value"
+        }
+    }
+]
